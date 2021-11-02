@@ -7,8 +7,7 @@ services:
       - "--log.level=DEBUG"
       - "--providers.docker=true"
       - "--providers.docker.exposedbydefault=false"
-      - "--entrypoints.web.address=:80"
-      - "--entrypoints.websecure.address=:443"
+      - "--entrypoints.web.address=:7000"
       - "--certificatesresolvers.myresolver.acme.httpchallenge=true"
       - "--certificatesresolvers.myresolver.acme.httpchallenge.entrypoint=web"
       - "--certificatesresolvers.myresolver.acme.email=${LETSENCRYPT_EMAIL}"
@@ -23,8 +22,7 @@ services:
       # middleware redirect for production only
       - "${HTTPS_USE_REDIRECT_MIDDLEWARE_LABEL}"
     ports:
-      - "80:80"
-      - "443:443"
+      - "7000:7000"
     volumes:
       - cert-vol:/letsencrypt
       - /var/run/docker.sock:/var/run/docker.sock:ro
@@ -35,16 +33,16 @@ services:
     restart: on-failure
     environment:
       - FRAPPE_PY=erpnext-python
-      - FRAPPE_PY_PORT=8000
+      - FRAPPE_PY_PORT=7002
       - FRAPPE_SOCKETIO=frappe-socketio
-      - SOCKETIO_PORT=9000
+      - SOCKETIO_PORT=7001
       - SKIP_NGINX_TEMPLATE_GENERATION=${SKIP_NGINX_TEMPLATE_GENERATION}
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.erpnext-nginx.rule=Host(${SITES})"
       - "${ENTRYPOINT_LABEL}"
       - "${CERT_RESOLVER_LABEL}"
-      - "traefik.http.services.erpnext-nginx.loadbalancer.server.port=80"
+      - "traefik.http.services.erpnext-nginx.loadbalancer.server.port=7000"
     volumes:
       - sites-vol:/var/www/html/sites:rw
       - assets-vol:/assets:rw
