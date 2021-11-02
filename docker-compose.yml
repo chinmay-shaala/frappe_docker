@@ -15,14 +15,15 @@ services:
     labels:
       # enable traefik
       - "traefik.enable=true"
-      # global redirect to https for production only
-      - "${HTTPS_REDIRECT_RULE_LABEL}"
-      - "${HTTPS_REDIRECT_ENTRYPOINT_LABEL}"
-      - "${HTTPS_REDIRECT_MIDDLEWARE_LABEL}"
-      # middleware redirect for production only
-      - "${HTTPS_USE_REDIRECT_MIDDLEWARE_LABEL}"
+      # # global redirect to https for production only
+      # - "${HTTPS_REDIRECT_RULE_LABEL}"
+      # - "${HTTPS_REDIRECT_ENTRYPOINT_LABEL}"
+      # - "${HTTPS_REDIRECT_MIDDLEWARE_LABEL}"
+      # # middleware redirect for production only
+      # - "${HTTPS_USE_REDIRECT_MIDDLEWARE_LABEL}"
     ports:
       - "7000:80"
+      - "443:443"
     volumes:
       - cert-vol:/letsencrypt
       - /var/run/docker.sock:/var/run/docker.sock:ro
