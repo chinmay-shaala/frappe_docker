@@ -22,30 +22,11 @@ services:
       # middleware redirect for production only
       - "${HTTPS_USE_REDIRECT_MIDDLEWARE_LABEL}"
     ports:
-      - "7000:7000"
+      - "7000:80"
     volumes:
       - cert-vol:/letsencrypt
       - /var/run/docker.sock:/var/run/docker.sock:ro
     userns_mode: "host"
-
-  erpnext-nginx:
-    image: frappe/erpnext-nginx:${ERPNEXT_VERSION}
-    restart: on-failure
-    environment:
-      - FRAPPE_PY=erpnext-python
-      - FRAPPE_PY_PORT=7002
-      - FRAPPE_SOCKETIO=frappe-socketio
-      - SOCKETIO_PORT=7001
-      - SKIP_NGINX_TEMPLATE_GENERATION=${SKIP_NGINX_TEMPLATE_GENERATION}
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.erpnext-nginx.rule=Host(${SITES})"
-      - "${ENTRYPOINT_LABEL}"
-      - "${CERT_RESOLVER_LABEL}"
-      - "traefik.http.services.erpnext-nginx.loadbalancer.server.port=7000"
-    volumes:
-      - sites-vol:/var/www/html/sites:rw
-      - assets-vol:/assets:rw
 
   erpnext-python:
     image: frappe/erpnext-worker:${ERPNEXT_VERSION}
